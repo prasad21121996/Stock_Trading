@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Net Worth</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .total {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>My Net Worth</h1>
+
+  <table id="investmentTable">
+    <thead>
+      <tr>
+        <th>Fund/Investment</th>
+        <th>Amount</th>
+        <th>Currency</th>
+        <th>Amount in USD</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table rows will be inserted here -->
+    </tbody>
+  </table>
+
+  <p class="total" id="totalNetWorth"></p>
+
+  <script>
+    // Your data (example)
+    const investments = [
+      { name: "Bank Savings", amount: 5000, currency: "USD", conversionRate: 1 },
+      { name: "Indian Mutual Fund", amount: 400000, currency: "INR", conversionRate: 0.012 },
+      { name: "Stock Portfolio", amount: 3000, currency: "EUR", conversionRate: 1.07 },
+      { name: "Crypto Wallet", amount: 0.5, currency: "BTC", conversionRate: 60000 },
+    ];
+
+    const tbody = document.getElementById('investmentTable').querySelector('tbody');
+    let totalUSD = 0;
+
+    investments.forEach(investment => {
+      const amountInUSD = investment.amount * investment.conversionRate;
+      totalUSD += amountInUSD;
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${investment.name}</td>
+        <td>${investment.amount}</td>
+        <td>${investment.currency}</td>
+        <td>$${amountInUSD.toFixed(2)}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    document.getElementById('totalNetWorth').innerText = `Total Net Worth: $${totalUSD.toFixed(2)} USD`;
+  </script>
+
+</body>
+</html>
