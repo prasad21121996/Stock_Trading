@@ -1,0 +1,5 @@
+name,amount,currency,conversionRate
+Bank Savings,5000,USD,1
+Indian Mutual Fund,400000,INR,0.012
+Stock Portfolio,3000,EUR,1.07
+Crypto Wallet,0.5,BTC,60000
