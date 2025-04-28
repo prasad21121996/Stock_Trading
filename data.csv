@@ -1,5 +1,9 @@
-name,amount,currency,conversionRate
-Bank Savings,5000,USD,1
-Indian Mutual Fund,400000,INR,0.012
-Stock Portfolio,3000,EUR,1.07
-Crypto Wallet,0.5,BTC,60000
+name,amount,currency,conversionRate,date
+Bank Savings,2000,USD,1,2024-04-01
+Bank Savings,2200,USD,1,2025-04-28
+Indian Mutual Fund,390000,INR,0.012,2024-04-01
+Indian Mutual Fund,400000,INR,0.012,2025-04-28
+Stock Portfolio,2500,EUR,1.07,2024-04-01
+Stock Portfolio,3000,EUR,1.07,2025-04-28
+Crypto Wallet,0.4,BTC,60000,2024-04-01
+Crypto Wallet,0.5,BTC,60000,2025-04-28
