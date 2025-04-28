@@ -5,50 +5,72 @@ document.addEventListener('DOMContentLoaded', function() {
     complete: function(results) {
       const investments = results.data;
       const tbody = document.getElementById('investmentTable').querySelector('tbody');
-      let totalUSD = 0;
-      let chartLabels = [];
-      let chartData = [];
+
+      // Group by Date
+      const dateGroups = {};
 
       investments.forEach(investment => {
-        if (!investment.name) return; // skip empty lines
+        if (!investment.name || !investment.date) return;
 
+        const date = investment.date;
         const amount = parseFloat(investment.amount);
         const conversionRate = parseFloat(investment.conversionRate);
         const amountInUSD = amount * conversionRate;
-        totalUSD += amountInUSD;
+
+        if (!dateGroups[date]) {
+          dateGroups[date] = [];
+        }
+        dateGroups[date].push({
+          ...investment,
+          amountInUSD
+        });
+      });
+
+      // Latest date data for table
+      const sortedDates = Object.keys(dateGroups).sort();
+      const latestDate = sortedDates[sortedDates.length - 1];
+      const latestInvestments = dateGroups[latestDate];
+
+      let totalUSD = 0;
+      latestInvestments.forEach(investment => {
+        totalUSD += investment.amountInUSD;
 
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${investment.name}</td>
-          <td>${amount}</td>
+          <td>${investment.amount}</td>
           <td>${investment.currency}</td>
-          <td>$${amountInUSD.toFixed(2)}</td>
+          <td>$${investment.amountInUSD.toFixed(2)}</td>
         `;
         tbody.appendChild(row);
-
-        chartLabels.push(investment.name);
-        chartData.push(amountInUSD.toFixed(2));
       });
 
-      document.getElementById('totalNetWorth').innerText = `Total Net Worth: $${totalUSD.toFixed(2)} USD`;
+      document.getElementById('totalNetWorth').innerText = `Total Net Worth on ${latestDate}: $${totalUSD.toFixed(2)} USD`;
 
-      // Create Chart
+      // Prepare Net Worth Over Time Data
+      const labels = [];
+      const totalNetWorthOverTime = [];
+
+      sortedDates.forEach(date => {
+        const dayInvestments = dateGroups[date];
+        const dayTotal = dayInvestments.reduce((sum, inv) => sum + inv.amountInUSD, 0);
+        labels.push(date);
+        totalNetWorthOverTime.push(dayTotal.toFixed(2));
+      });
+
+      // Line Chart
       const ctx = document.getElementById('netWorthChart').getContext('2d');
       new Chart(ctx, {
-        type: 'pie',
+        type: 'line',
         data: {
-          labels: chartLabels,
+          labels: labels,
           datasets: [{
-            label: 'Net Worth Distribution',
-            data: chartData,
-            backgroundColor: [
-              'rgba(75, 192, 192, 0.6)',
-              'rgba(255, 99, 132, 0.6)',
-              'rgba(54, 162, 235, 0.6)',
-              'rgba(255, 206, 86, 0.6)',
-              'rgba(153, 102, 255, 0.6)'
-            ],
-            borderWidth: 1
+            label: 'Net Worth Over Time',
+            data: totalNetWorthOverTime,
+            fill: true,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            tension: 0.3
           }]
         },
         options: {
@@ -57,6 +79,11 @@ document.addEventListener('DOMContentLoaded', function() {
             legend: {
               position: 'bottom',
             },
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
           }
         }
       });
